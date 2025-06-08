@@ -1,0 +1,135 @@
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    container_name: ms_pg_sql
+    image: postgres 
+    environment:
+      POSTGRES_USER: glen
+      POSTGRES_PASSWORD: glen
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5431:5432"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  # Interfaz de administración para PostgreSQL
+  pgadmin:
+    container_name: ms_pgadmin
+    image: dpage/pgadmin4
+    environment:
+       - PGADMIN_DEFAULT_PASSWORD=123456
+       - PGADMIN_DEFAULT_EMAIL=superman@google.com
+       
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - 5050:80
+    networks:
+      - microservices-net
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootglen
+      MYSQL_USER: glen
+      MYSQL_PASSWORD: glen
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: unless-stopped
+    ports:
+      - 6060:80
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306  
+      - PMA_USER=root
+      - PMA_PASSWORD=rootglen
+    networks:
+      - microservices-net
+    depends_on:
+      - mysql
+
+  zipkin:
+   container_name: zipkin
+   image: openzipkin/zipkin
+   ports:
+     - "9411:9411"
+   networks:
+      - microservices-net
+  
+  keycloack:
+    container_name: keycloack-bsn
+    image: quay.io/keycloak/keycloak:26.2.4
+    environment:
+      # Database connection
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: glen
+      KC_DB_PASSWORD: glen
+    
+      # Admin credentials
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    
+      # Hostname settings
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: false
+      KC_HTTP_ENABLED: true
+
+    command: start-dev     
+    ports:
+      - "8080:8080"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  
+
+
+networks:
+  microservices-net:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
+  mysql:

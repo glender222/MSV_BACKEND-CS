@@ -1,0 +1,70 @@
+## Falta implementar los demas microservicios, si es practica , notificaciones, aprendizaje usuarios , aqui se estaria implementando 
+## pero tambien se pone en el config server para que entienda que se esta configurando en la red de nuestro proyecto
+
+
+server: 
+  port: 8222
+
+spring: 
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true  # ← AGREGAR esta línea
+      routes: 
+        # Ruta para ejercicios
+        - id: practica-service-ejercicios
+          uri: lb://practica-service
+          predicates:
+            - Path=/api/v1/ejercicios/**
+            
+        # Ruta para soluciones  
+        - id: practica-service-soluciones
+          uri: lb://practica-service
+          predicates:
+            - Path=/api/v1/soluciones/**
+      
+        # Ruta para usuarios
+        - id: usuario-service
+          uri: lb://usuario-service
+          predicates:
+             - Path=/api/v1/usuarios/**
+
+      # CORS básico para frontend
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 
+              - "http://localhost:3000"
+              - "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+             
+        
+
+
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.gateway.route: DEBUG
+    org.springframework.cloud.gateway.handler: DEBUG
+    org.springframework.web.reactive: DEBUG
+
+
+eureka: 
+  client:
+    registerWithEureka: true   # ← Cambiar a true
+    fetch-registry: true       # ← Cambiar a true
+    service-url: 
+      defaultZone: http://localhost:8761/eureka/  # ← URL correcta
+            

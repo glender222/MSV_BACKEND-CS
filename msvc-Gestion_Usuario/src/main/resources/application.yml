@@ -1,0 +1,13 @@
+spring:
+  config:
+    import: optional:configserver:http://localhost:8888
+  application:
+    name: usuario-service
+
+
+ 
+keycloak:
+  server-url: http://localhost:8080
+  realm: sharecoding
+  client-id: users-service-client
+  client-secret: DRfJ84iZax3f77WL9op5TWp5kew0aN0V

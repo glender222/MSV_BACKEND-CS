@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: optional:configserver:http://localhost:8888
+  
+  application:
+    name: msvc-comunidad
+
+
+azure:
+  storage:
+    connection-string: ${AZURE_STORAGE_CONNECTION_STRING:DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=placeholder;EndpointSuffix=core.windows.net}

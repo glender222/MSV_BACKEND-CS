@@ -1,0 +1,25 @@
+## Falta implementar los demas microservicios, si es practica , notificaciones, aprendizaje usuarios , aqui se estaria implementando 
+## pero tambien se pone en el config server para que entienda que se esta configurando en la red de nuestro proyecto
+
+spring: 
+ config:
+    import: optional:configserver:http://localhost:8888
+ application:
+    name: gateway-service
+
+# Configuración específica para desarrollo
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    gateway:
+      enabled: true
+
+# Configuración de logging local (solo para desarrollo)
+logging:
+  level:
+    com.glen.gateway: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
