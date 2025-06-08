@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -52,6 +53,7 @@ public class ProgressController {
      * Obtiene el progreso completo del usuario autenticado
      */
     @GetMapping("/mi-progreso")
+    @Transactional(readOnly = true)
     public ResponseEntity<ProgressResponseDTO> getMyProgress(
             @RequestHeader("Authorization") String authHeader) {
         
@@ -158,6 +160,7 @@ public class ProgressController {
      * Obtiene estadísticas detalladas del usuario
      */
     @GetMapping("/estadisticas")
+    @Transactional(readOnly = true)
     public ResponseEntity<UserStatsDTO> getMyStats(
             @RequestHeader("Authorization") String authHeader) {
         
@@ -177,6 +180,7 @@ public class ProgressController {
      * Obtiene historial de soluciones del usuario
      */
     @GetMapping("/historial")
+    @Transactional(readOnly = true)
     public ResponseEntity<List<SolutionHistoryDTO>> getMyHistory(
             @RequestHeader("Authorization") String authHeader,
             @RequestParam(required = false) Long exerciseId,
@@ -208,6 +212,7 @@ public class ProgressController {
      * Obtiene el estado de un ejercicio específico
      */
     @GetMapping("/ejercicio/{exerciseId}")
+    @Transactional(readOnly = true)
     public ResponseEntity<Map<String, Object>> getExerciseProgress(
             @PathVariable Long exerciseId,
             @RequestHeader("Authorization") String authHeader) {
