@@ -21,6 +21,8 @@ import java.util.HashMap;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+       // ========== EXCEPCIONES EXISTENTES (mantener) ==========
+    
     @ExceptionHandler(PremiumRequiredException.class)
     public ResponseEntity<Map<String, Object>> handlePremiumRequired(PremiumRequiredException ex) {
         log.warn("Acceso premium requerido: {}", ex.getMessage());
@@ -74,6 +76,118 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+    
+    // ========== NUEVAS EXCEPCIONES DE SEGURIDAD ==========
+    
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<Map<String, Object>> handleUnauthorizedAccess(UnauthorizedAccessException ex) {
+        log.warn("Acceso no autorizado: {} - Usuario: {} - Recurso: {}", 
+            ex.getMessage(), ex.getKeycloakId(), ex.getResource());
+        
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "UNAUTHORIZED_ACCESS");
+        error.put("message", ex.getMessage());
+        error.put("resource", ex.getResource());
+        error.put("timestamp", LocalDateTime.now());
+        error.put("loginUrl", "/auth/login");
+        
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+    
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidToken(InvalidTokenException ex) {
+        log.warn("Token inválido: {}", ex.getMessage());
+        
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "INVALID_TOKEN");
+        error.put("message", ex.getMessage());
+        error.put("timestamp", LocalDateTime.now());
+        error.put("loginUrl", "/auth/login");
+        error.put("tokenInfo", ex.getTokenInfo());
+        
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+    
+    @ExceptionHandler(InsufficientPrivilegesException.class)
+    public ResponseEntity<Map<String, Object>> handleInsufficientPrivileges(InsufficientPrivilegesException ex) {
+        log.warn("Privilegios insuficientes: {} - Requerido: {} - Usuario tipo: {}", 
+            ex.getMessage(), ex.getRequiredPrivilege(), ex.getUserType());
+        
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "INSUFFICIENT_PRIVILEGES");
+        error.put("message", ex.getMessage());
+        error.put("requiredPrivilege", ex.getRequiredPrivilege());
+        error.put("userType", ex.getUserType());
+        error.put("resourceId", ex.getResourceId());
+        error.put("upgradeUrl", "/upgrade-premium");
+        error.put("timestamp", LocalDateTime.now());
+        
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+    
+    // ========== EXCEPCIONES DE NEGOCIO ==========
+    
+    @ExceptionHandler(ExerciseAlreadyCompletedException.class)
+    public ResponseEntity<Map<String, Object>> handleExerciseAlreadyCompleted(ExerciseAlreadyCompletedException ex) {
+        log.info("Intento de completar ejercicio ya completado: {}", ex.getMessage());
+        
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "EXERCISE_ALREADY_COMPLETED");
+        error.put("message", ex.getMessage());
+        error.put("exerciseId", ex.getExerciseId());
+        error.put("exerciseName", ex.getExerciseName());
+        error.put("completionDate", ex.getCompletionDate());
+        error.put("canRetry", true);
+        error.put("timestamp", LocalDateTime.now());
+        
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+    
+    @ExceptionHandler(SolutionLimitExceededException.class)
+    public ResponseEntity<Map<String, Object>> handleSolutionLimitExceeded(SolutionLimitExceededException ex) {
+        log.warn("Límite de soluciones excedido: {}", ex.getMessage());
+        
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "SOLUTION_LIMIT_EXCEEDED");
+        error.put("message", ex.getMessage());
+        error.put("currentAttempts", ex.getCurrentAttempts());
+        error.put("maxAttempts", ex.getMaxAttempts());
+        error.put("exerciseId", ex.getExerciseId());
+        error.put("timestamp", LocalDateTime.now());
+        
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(error);
+    }
+    
+    // ========== EXCEPCIONES DE VALIDACIÓN ==========
+    
+    @ExceptionHandler(InvalidSolutionException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidSolution(InvalidSolutionException ex) {
+        log.warn("Solución inválida: {}", ex.getMessage());
+        
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "INVALID_SOLUTION");
+        error.put("message", ex.getMessage());
+        error.put("validationErrors", ex.getValidationErrors());
+        error.put("timestamp", LocalDateTime.now());
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+    
+    @ExceptionHandler(CodeCompilationException.class)
+    public ResponseEntity<Map<String, Object>> handleCodeCompilation(CodeCompilationException ex) {
+        log.warn("Error de compilación: {}", ex.getMessage());
+        
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "CODE_COMPILATION_ERROR");
+        error.put("message", ex.getMessage());
+        error.put("compilationErrors", ex.getCompilationErrors());
+        error.put("exerciseId", ex.getExerciseId());
+        error.put("timestamp", LocalDateTime.now());
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+    
+    // ========== EXCEPCIONES GENÉRICAS (mantener) ==========
     
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {

@@ -5,7 +5,7 @@ spring:
   application:
     name: practica-service
   datasource:
-    url: jdbc:postgresql://localhost:5431/practicas8
+    url: jdbc:postgresql://localhost:5431/msvpracticas
     username: glen
     password: glen
     driver-class-name: org.postgresql.Driver
@@ -17,6 +17,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
 
 eureka:
   client:

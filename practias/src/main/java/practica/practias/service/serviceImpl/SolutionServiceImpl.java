@@ -16,6 +16,7 @@ import practica.practias.model.Result;
 import practica.practias.model.Solution;
 
 import practica.practias.repository.RepositorySolution;
+import practica.practias.service.ProgressService;
 import practica.practias.service.ResultService;
 import practica.practias.service.SolutionService;
 
@@ -33,6 +34,9 @@ public class SolutionServiceImpl implements SolutionService{
     
     @Autowired
     private CodeEvaluator codeEvaluator;
+   
+    @Autowired
+    private ProgressService progressService;
 
   
 
@@ -64,6 +68,13 @@ public class SolutionServiceImpl implements SolutionService{
     // Actualizar estado inicial de la solución
     solution.setEstado("EN_PROCESO");
     Solution savedSolution = saveSolution(solution);  // Variable diferente
+
+
+       // ===== NUEVO: REGISTRAR INTENTO =====
+    progressService.registrarIntento(
+        solution.getUsuarioId(), 
+        solution.getExercises().getId()
+    );
     
     // Crear o recuperar un resultado para esta solución
     Result result = resultService.findBySolution(solution)  // Usa la original
@@ -86,16 +97,29 @@ public class SolutionServiceImpl implements SolutionService{
         
         // Calcular tiempo de ejecución en segundos
         long endTime = System.nanoTime();
-        float tiempoEjecucion = (endTime - startTime) / 1_000_000_000F;
+        float tiempoEjecucionSegundos = (endTime - startTime) / 1_000_000_000F;
+        int tiempoEjecucionMs = Math.round(tiempoEjecucionSegundos * 1000);
         
         // Actualizar resultado
         String estado = passed ? "CORRECTO" : "FALLIDO";
-        resultService.updateResultStatus(result, estado, errores, tiempoEjecucion);
+        resultService.updateResultStatus(result, estado, errores, tiempoEjecucionSegundos);
         
         // Actualizar estado de la solución guardada
         savedSolution.setEstado(estado);
         savedSolution = saveSolution(savedSolution);
         
+       // ===== NUEVO: ACTUALIZAR PROGRESO SI ES CORRECTO =====
+        if (passed) {
+            progressService.marcarEjercicioComoCompletado(
+                solution.getUsuarioId(),
+                solution.getExercises().getId(),
+                tiempoEjecucionMs
+            );
+        }
+        
+        
+
+
         return savedSolution;  // Retorna la versión guardada
         
     } catch (Exception e) {

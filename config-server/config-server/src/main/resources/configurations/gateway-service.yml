@@ -24,7 +24,14 @@ spring:
           uri: lb://practica-service
           predicates:
             - Path=/api/v1/soluciones/**
-      
+        
+        # Ruta para progeso
+        - id: practica-service-progeso
+          uri: lb://practica-service
+          predicates:
+             - Path=/api/v1/progreso/**
+
+
         # Ruta para usuarios
         - id: usuario-service
           uri: lb://usuario-service

@@ -13,10 +13,9 @@ import practica.practias.repository.RepositoryExercises;
 @Component
 public class DataInitializer implements CommandLineRunner{
     
-
-private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
+ 
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
     private final RepositoryExercises repositoryExercises;
-    
     
     public DataInitializer(RepositoryExercises repositoryExercises) {
         this.repositoryExercises = repositoryExercises;
@@ -39,7 +38,6 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
         }
     }
     
-   
     private void loadAccumulateExercise() {
         Exercises exercise = new Exercises();
         exercise.setNombre("Accumulate");
@@ -63,10 +61,10 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "    }\n" +
                 "}\n");
         
-        // Pruebas unitarias para verificar la implementación
+        // Pruebas unitarias MIGRADAS A JUNIT 5
         exercise.setPruebas(
-                "import org.junit.Test;\n" +
-                "import static org.junit.Assert.*;\n" +
+                "import org.junit.jupiter.api.Test;\n" +
+                "import static org.assertj.core.api.Assertions.assertThat;\n" +
                 "import java.util.Arrays;\n" +
                 "import java.util.Collections;\n" +
                 "import java.util.List;\n" +
@@ -76,25 +74,26 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "    public void emptyAccumulation() {\n" +
                 "        List<Integer> input = Collections.emptyList();\n" +
                 "        List<Integer> expected = Collections.emptyList();\n" +
-                "        assertEquals(expected, Accumulate.accumulate(input, x -> x * x));\n" +
+                "        assertThat(Accumulate.accumulate(input, x -> x * x)).isEqualTo(expected);\n" +
                 "    }\n\n" +
                 "    @Test\n" +
                 "    public void accumulateSquares() {\n" +
                 "        List<Integer> input = Arrays.asList(1, 2, 3, 4);\n" +
                 "        List<Integer> expected = Arrays.asList(1, 4, 9, 16);\n" +
-                "        assertEquals(expected, Accumulate.accumulate(input, x -> x * x));\n" +
+                "        assertThat(Accumulate.accumulate(input, x -> x * x)).isEqualTo(expected);\n" +
                 "    }\n\n" +
                 "    @Test\n" +
                 "    public void accumulateUpperCase() {\n" +
                 "        List<String> input = Arrays.asList(\"hello\", \"world\");\n" +
                 "        List<String> expected = Arrays.asList(\"HELLO\", \"WORLD\");\n" +
-                "        assertEquals(expected, Accumulate.accumulate(input, String::toUpperCase));\n" +
+                "        assertThat(Accumulate.accumulate(input, String::toUpperCase)).isEqualTo(expected);\n" +
                 "    }\n\n" +
                 "    @Test\n" +
                 "    public void accumulateReversedStrings() {\n" +
                 "        List<String> input = Arrays.asList(\"the\", \"quick\", \"brown\", \"fox\", \"etc\");\n" +
                 "        List<String> expected = Arrays.asList(\"eht\", \"kciuq\", \"nworb\", \"xof\", \"cte\");\n" +
-                "        assertEquals(expected, Accumulate.accumulate(input, s -> new StringBuilder(s).reverse().toString()));\n" +
+                "        assertThat(Accumulate.accumulate(input, s -> new StringBuilder(s).reverse().toString()))\n" +
+                "                .isEqualTo(expected);\n" +
                 "    }\n" +
                 "}\n");
         
@@ -115,7 +114,6 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "- \"Complementary metal-oxide semiconductor\" -> \"CMOS\"");
         exercise.setTiempoCreacion(LocalDateTime.now());
         
-        // Plantilla con la estructura básica que el usuario debe completar
         exercise.setPlantilla(
                 "class Acronym {\n\n" +
                 "    private String acronym;\n\n" +
@@ -127,7 +125,7 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "    }\n" +
                 "}\n");
         
-        // Pruebas unitarias para verificar la implementación
+        // YA ESTABA EN JUNIT 5 - Solo verificamos consistencia
         exercise.setPruebas("import org.junit.jupiter.api.Test;\n" +
                 "import static org.assertj.core.api.Assertions.assertThat;\n\n" +
                 "public class AcronymTest {\n\n" +
@@ -178,7 +176,6 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "3. `a` y `m` deben ser coprimos (su MCD debe ser 1)");
         exercise.setTiempoCreacion(LocalDateTime.now());
         
-        // Plantilla con la estructura básica que el usuario debe completar
         exercise.setPlantilla(
                 "public class AffineCipher {\n\n" +
                 "    public String encode(String text, int coefficient1, int coefficient2) {\n" +
@@ -191,7 +188,7 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "    }\n" +
                 "}\n");
         
-        // Pruebas unitarias para verificar la implementación
+        // YA ESTABA EN JUNIT 5 - Mantenemos como está
         exercise.setPruebas("import org.junit.jupiter.api.Test;\n" +
                 "import static org.assertj.core.api.Assertions.assertThat;\n" +
                 "import static org.assertj.core.api.Assertions.assertThatExceptionOfType;\n\n" +
@@ -244,7 +241,6 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "2. Listar todos los alérgenos a los que una persona es alérgica");
         exercise.setTiempoCreacion(LocalDateTime.now());
         
-        // Plantilla con la estructura básica que el usuario debe completar
         exercise.setPlantilla(
                 "import java.util.List;\n\n" +
                 "enum Allergen {\n" +
@@ -280,7 +276,7 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "    }\n" +
                 "}\n");
         
-        // Pruebas unitarias para verificar la implementación
+        // YA ESTABA EN JUNIT 5 - Mantenemos como está
         exercise.setPruebas("import org.junit.jupiter.api.Test;\n" +
                 "import static org.assertj.core.api.Assertions.assertThat;\n" +
                 "\n" +
@@ -349,7 +345,6 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "```");
         exercise.setTiempoCreacion(LocalDateTime.now());
         
-        // Plantilla con la estructura básica que el usuario debe completar
         exercise.setPlantilla(
                 "import java.util.Map;\n\n" +
                 "class Alphametics {\n" +
@@ -365,7 +360,7 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "class UnsolvablePuzzleException extends Exception {\n" +
                 "}\n");
         
-        // Pruebas unitarias para verificar la implementación
+        // YA ESTABA EN JUNIT 5 - Mantenemos como está
         exercise.setPruebas("import org.junit.jupiter.api.Test;\n" +
                 "import static java.util.Map.entry;\n" +
                 "import static org.assertj.core.api.Assertions.assertThat;\n" +
@@ -422,7 +417,6 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "- El número resultante debe estar en su forma normalizada (sin ceros iniciales)");
         exercise.setTiempoCreacion(LocalDateTime.now());
         
-        // Plantilla con la estructura básica que el usuario debe completar
         exercise.setPlantilla(
                 "class BaseConverter {\n" +
                 "    private int originalBase;\n" +
@@ -436,7 +430,7 @@ private static final Logger logger = LoggerFactory.getLogger(DataInitializer.cla
                 "    }\n" +
                 "}\n");
         
-        // Pruebas unitarias para verificar la implementación
+        // YA ESTABA EN JUNIT 5 - Mantenemos como está
         exercise.setPruebas("import org.junit.jupiter.api.Test;\n" +
                 "import static org.assertj.core.api.Assertions.assertThat;\n" +
                 "import static org.assertj.core.api.Assertions.assertThatExceptionOfType;\n\n" +
