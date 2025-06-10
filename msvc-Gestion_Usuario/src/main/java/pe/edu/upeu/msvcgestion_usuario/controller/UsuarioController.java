@@ -28,7 +28,7 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
     
- //ID DE TODOS LOS USUARIOS - > Para notificaciones
+ //ID DE TODOS LOS USUARIOS - > Para notificaciones josue
     @GetMapping("obtener/ids")
     public ResponseEntity<List<Long>> obtenerTodosLosIds() {
         List<Long> ids = usuarioService.findAll()
