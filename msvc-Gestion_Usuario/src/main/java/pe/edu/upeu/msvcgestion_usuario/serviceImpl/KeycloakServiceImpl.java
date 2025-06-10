@@ -223,6 +223,38 @@ private final Keycloak keycloak;
     
 
 
+// nuevo id para jwt
+
+public void agregarDatabaseIdComoAtributo(String keycloakId, Long databaseId) {
+    log.info("Agregando database_id {} al usuario Keycloak: {}", databaseId, keycloakId);
+    
+    try {
+        UsersResource users = keycloak.realm(realm).users();
+        UserRepresentation user = users.get(keycloakId).toRepresentation();
+        
+        Map<String, List<String>> attributes = user.getAttributes();
+        if (attributes == null) {
+            attributes = new HashMap<>();
+        }
+        
+        // Agregar el ID de la BD como atributo
+        attributes.put("database_id", Arrays.asList(databaseId.toString()));
+        user.setAttributes(attributes);
+        
+        users.get(keycloakId).update(user);
+        
+        log.info("Database ID agregado exitosamente a Keycloak");
+        
+    } catch (Exception e) {
+        log.error("Error agregando database_id a Keycloak: {}", e.getMessage());
+        throw new RuntimeException("Error agregando database_id: " + e.getMessage());
+    }
+
+
+}
+
+
+
 
 
 

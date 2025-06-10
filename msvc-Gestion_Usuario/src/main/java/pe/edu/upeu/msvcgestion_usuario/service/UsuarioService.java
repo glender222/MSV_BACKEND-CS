@@ -1,6 +1,6 @@
 package pe.edu.upeu.msvcgestion_usuario.service;
 
-import org.keycloak.representations.idm.UserRepresentation;
+
 
 import pe.edu.upeu.msvcgestion_usuario.entity.Usuario;
 import pe.edu.upeu.msvcgestion_usuario.entity.dto.UsuarioCompletoDTO;

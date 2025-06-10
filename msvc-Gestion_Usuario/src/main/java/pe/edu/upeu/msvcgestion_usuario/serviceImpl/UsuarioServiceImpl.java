@@ -79,6 +79,9 @@ public class UsuarioServiceImpl  extends GenericServiceImpl<Usuario, Long> imple
             usuario.setEstado(EstadoUsuario.ACTIVO);
             
             Usuario savedUsuario = save(usuario);
+
+        // 3. NUEVO: Agregar el ID de BD como atributo en Keycloak
+        keycloakService.agregarDatabaseIdComoAtributo(keycloakId, savedUsuario.getId());
             
             log.info("Usuario registrado exitosamente con ID: {}", savedUsuario.getId());
             return mapToResponseDTO(savedUsuario);

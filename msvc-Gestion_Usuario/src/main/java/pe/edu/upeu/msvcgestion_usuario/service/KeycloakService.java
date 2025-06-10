@@ -26,4 +26,6 @@ public interface KeycloakService {
        UserRepresentation getUserFromKeycloak(String keycloakId);
 
 
+       // nuevo jwt
+void agregarDatabaseIdComoAtributo(String keycloakId, Long databaseId);
   }

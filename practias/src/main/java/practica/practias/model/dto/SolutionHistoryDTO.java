@@ -3,6 +3,8 @@ package practica.practias.model.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Builder;
 import lombok.Data;
 import practica.practias.model.Enum.EstadoSolucion;
@@ -10,6 +12,7 @@ import practica.practias.model.Enum.NivelDificultad;
 
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SolutionHistoryDTO {
     private Long solutionId;
     private Long exerciseId;
